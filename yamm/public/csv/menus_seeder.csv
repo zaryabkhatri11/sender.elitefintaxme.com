@@ -1,0 +1,22 @@
+name,module_id,icon,slug,position,is_protected,static,status
+Dashboard,1,"fa fa-dashboard",dashboard,1,1,0,1
+Users,3,"fa fa-user",users,2,1,0,1
+Roles,4,"fa fa-edit",roles,3,1,0,1
+Permissions,5,"fa fa-check-square-o",permissions,4,1,0,1
+Modules,6,"fa fa-database",modules,5,1,0,1
+Languages,7,"fa fa-comments-o",languages,6,1,0,1
+Pages,8,"fa fa-wpforms",pages,7,1,0,1
+Menus,9,"fa fa-th",menus,8,1,0,1
+"Contact us",10,"fa fa-mail-forward",contactus,9,1,0,1
+Notifications,11,"fa fa-bell",notifications,10,1,0,1
+Settings,12,"fa fa-gears",settings,11,1,0,1
+"Email Templates",13,"fa fa-glass",email-templates,12,0,0,1
+Demands,14,"fa fa-life-saver",demands,13,0,0,1
+"User Demands",15,"fa fa-user-md",user-demands,14,0,0,1
+Categories,16,"fa fa-tree",categories,15,0,0,1
+Libraries,17,"fa fa-book",libraries,16,0,0,1
+Definations,18,"fa fa-dedent",definations,17,0,0,1
+Webinars,19,"fa fa-users",webinars,18,0,0,1
+Emails,20,"fa fa-mail-forward",emails,13,0,0,1
+Videos,21,"fa fa-video-camera",videos,14,0,0,1
+Sheets,20,"fa fa-file-text-o",sheets,13,0,0,1

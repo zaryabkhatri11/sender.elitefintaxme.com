@@ -1,0 +1,14 @@
+{!! App\Helper\MenuHelper::staticGeneratePermittedMenus() !!}
+
+
+
+
+
+
+
+
+
+
+
+
+

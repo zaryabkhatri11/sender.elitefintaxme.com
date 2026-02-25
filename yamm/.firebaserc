@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "local": "boilerplate-c1433"
+  },
+  "firebase": {
+        "apiKey": "AIzaSyDC9cH6urPlS6Ygk_2UtUNk-8XPI2ttl1Q",
+        "authDomain": "boilerplate-c1433.firebaseapp.com",
+        "databaseURL": "https://boilerplate-c1433.firebaseio.com",
+        "projectId": "boilerplate-c1433",
+        "storageBucket": "boilerplate-c1433.appspot.com",
+        "messagingSenderId": "977250940465",
+        "appId": "1:977250940465:web:4d9b848a75e8705d1e4710",
+        "measurementId": "G-5TRY3RWFPB"
+       }
+}

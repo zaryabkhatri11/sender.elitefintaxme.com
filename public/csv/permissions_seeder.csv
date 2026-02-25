@@ -1,0 +1,109 @@
+name,module_id,display_name,description,is_protected
+
+adminpanel,1,"Admin Panel","Admin Panel",1
+dashboard,2,Dashboard,Dashboard,1
+users.index,3,"List Users","List Roles",1
+users.create,3,"Create Users","Create Users",1
+users.show,3,"View User","View User",1
+users.edit,3,"Edit User","Edit User",1
+users.destroy,3,"Delete User","Delete User",1
+roles.index,4,"List Roles","List Roles",1
+roles.create,4,"Create Role","Create Role",1
+roles.show,4,"View Role","View Role",1
+roles.edit,4,"Edit Role","Edit Role",1
+roles.destroy,4,"Delete Role","Delete Role",1
+permissions.index,5,"List Permissions","List Permissions",1
+permissions.create,5,"Create Permission","Create Permission",1
+permissions.show,5,"View Permission","View Permission",1
+permissions.edit,5,"Edit Permission","Edit Permission",1
+permissions.destroy,5,"Delete Permission","Delete Permission",1
+modules.index,6,"List Modules","List Modules",1
+modules.create,6,"Create Module","Create Module",1
+modules.show,6,"View Module","View Module",1
+modules.edit,6,"Edit Module","Edit Module",1
+modules.destroy,6,"Delete Module","Delete Module",1
+languages.index,7,"List Languages","List Languages",1
+languages.create,7,"Create Languages","Create Languages",1
+languages.show,7,"View Languages","View Languages",1
+languages.edit,7,"Edit Languages","Edit Languages",1
+languages.destroy,7,"Delete Languages","Delete Languages",1
+pages.index,8,"List Pages","List Pages",1
+pages.create,8,"Create Pages","Create Pages",1
+pages.show,8,"View Pages","View Pages",1
+pages.edit,8,"Edit Pages","Edit Pages",1
+pages.destroy,8,"Delete Pages","Delete Pages",1
+contactus.index,9,"List Contact Us","List Contact Us Record",1
+contactus.create,9,"Create Contact Us","Create Contact Us Record",1
+contactus.show,9,"View Contact Us","View Contact Us Record",1
+contactus.edit,9,"Edit Contact Us","Edit Contact Us Record",1
+contactus.destroy,9,"Delete Contact Us","Delete Contact Us Record",1
+notifications.index,10,"List Notification","List Notification",1
+notifications.create,10,"Create Notification","Create Notification",1
+notifications.show,10,"View Notification","View Notification",1
+notifications.edit,10,"Edit Notification","Edit Notification",1
+notifications.destroy,10,"Delete Notification","Delete Notification",1
+menus.index,11,"List Menu","List Menu",1
+menus.create,11,"Create Menu","Create Menu",1
+menus.show,11,"View Menu","View Menu",1
+menus.edit,11,"Edit Menu","Edit Menu",1
+menus.destroy,11,"Delete Menu","Delete Menu",1
+settings.index,12,Settings,"Index Settings",1
+settings.create,12,Settings,"Create Settings",1
+settings.show,12,Settings,"Show Settings",1
+settings.edit,12,Settings,"Edit Settings",1
+settings.destroy,12,Settings,"Destroy Settings",1
+email-templates.index,13,"Email Templates","Index Email Templates",0
+email-templates.create,13,"Email Templates","Create Email Templates",0
+email-templates.show,13,"Email Templates","Show Email Templates",0
+email-templates.edit,13,"Email Templates","Edit Email Templates",0
+email-templates.destroy,13,"Email Templates","Destroy Email Templates",0
+demands.index,14,Demands,"Index Demands",0
+demands.create,14,Demands,"Create Demands",0
+demands.show,14,Demands,"Show Demands",0
+demands.edit,14,Demands,"Edit Demands",0
+demands.destroy,14,Demands,"Destroy Demands",0
+user-demands.index,15,"User Demands","Index User Demands",0
+user-demands.create,15,"User Demands","Create User Demands",0
+user-demands.show,15,"User Demands","Show User Demands",0
+user-demands.edit,15,"User Demands","Edit User Demands",0
+user-demands.destroy,15,"User Demands","Destroy User Demands",0
+categories.index,16,Categories,"Index Categories",0
+categories.create,16,Categories,"Create Categories",0
+categories.show,16,Categories,"Show Categories",0
+categories.edit,16,Categories,"Edit Categories",0
+categories.destroy,16,Categories,"Destroy Categories",0
+libraries.index,17,Libraries,"Index Libraries",0
+libraries.create,17,Libraries,"Create Libraries",0
+libraries.show,17,Libraries,"Show Libraries",0
+libraries.edit,17,Libraries,"Edit Libraries",0
+libraries.destroy,17,Libraries,"Destroy Libraries",0
+definations.index,18,Definations,"Index Definations",0
+definations.create,18,Definations,"Create Definations",0
+definations.show,18,Definations,"Show Definations",0
+definations.edit,18,Definations,"Edit Definations",0
+definations.destroy,18,Definations,"Destroy Definations",0
+webinars.index,19,Webinars,"Index Webinars",0
+webinars.create,19,Webinars,"Create Webinars",0
+webinars.show,19,Webinars,"Show Webinars",0
+webinars.edit,19,Webinars,"Edit Webinars",0
+webinars.destroy,19,Webinars,"Destroy Webinars",0
+emails.index,20,Emails,"Index Emails",0
+emails.create,20,Emails,"Create Emails",0
+emails.show,20,Emails,"Show Emails",0
+emails.edit,20,Emails,"Edit Emails",0
+emails.destroy,20,Emails,"Destroy Emails",0
+videos.index,21,Videos,"Index Videos",0
+videos.create,21,Videos,"Create Videos",0
+videos.show,21,Videos,"Show Videos",0
+videos.edit,21,Videos,"Edit Videos",0
+videos.destroy,21,Videos,"Destroy Videos",0
+sheets.index,20,Sheets,"Index Sheets",0
+sheets.create,20,Sheets,"Create Sheets",0
+sheets.show,20,Sheets,"Show Sheets",0
+sheets.edit,20,Sheets,"Edit Sheets",0
+sheets.destroy,20,Sheets,"Destroy Sheets",0
+customers.index,29,Customers,"Index Customers",0
+customers.create,29,Customers,"Create Customers",0
+customers.show,29,Customers,"Show Customers",0
+customers.edit,29,Customers,"Edit Customers",0
+customers.destroy,29,Customers,"Destroy Customers",0
