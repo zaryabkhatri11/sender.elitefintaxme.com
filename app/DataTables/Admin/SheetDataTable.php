@@ -23,7 +23,12 @@ class SheetDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'admin.sheets.datatables_actions');
+        return $dataTable->editColumn('status', function ($sheet) {
+            $class = $sheet->status == 'live' ? 'label-success' : 'label-danger';
+            return '<span class="label ' . $class . '">' . ucfirst($sheet->status) . '</span>';
+        })
+            ->addColumn('action', 'admin.customers.datatables_actions') // Note: Sheets usually have their own actions but user screenshot shows similar
+            ->rawColumns(['status', 'action']);
     }
 
     /**
@@ -59,8 +64,8 @@ class SheetDataTable extends DataTable
             ->minifiedAjax()
             ->addAction(['width' => '80px', 'printable' => false])
             ->parameters(array_merge(Util::getDataTableParams(), [
-                'dom'     => 'Blfrtip',
-                'order'   => [[0, 'desc']],
+                'dom' => 'Blfrtip',
+                'order' => [[0, 'desc']],
                 'buttons' => $buttons,
             ]));
     }

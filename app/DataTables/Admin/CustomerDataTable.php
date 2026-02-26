@@ -23,7 +23,12 @@ class CustomerDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'admin.customers.datatables_actions');
+        return $dataTable->editColumn('status', function ($customer) {
+            $class = $customer->status == 'live' ? 'label-success' : 'label-danger';
+            return '<span class="label ' . $class . '">' . ucfirst($customer->status) . '</span>';
+        })
+            ->addColumn('action', 'admin.customers.datatables_actions')
+            ->rawColumns(['status', 'action']);
     }
 
     /**
@@ -59,8 +64,8 @@ class CustomerDataTable extends DataTable
             ->minifiedAjax()
             ->addAction(['width' => '80px', 'printable' => false])
             ->parameters(array_merge(Util::getDataTableParams(), [
-                'dom'     => 'Blfrtip',
-                'order'   => [[0, 'desc']],
+                'dom' => 'Blfrtip',
+                'order' => [[0, 'desc']],
                 'buttons' => $buttons,
             ]));
     }
@@ -80,7 +85,8 @@ class CustomerDataTable extends DataTable
             'entity',
             'owner_address',
             'subject_mark',
-            'case_number'
+            'case_number',
+            'status'
         ];
     }
 

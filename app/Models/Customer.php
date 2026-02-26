@@ -6,11 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property integer id
- * @property string name
- * @property string created_at
- * @property string updated_at
- * @property string deleted_at
+ * @property integer $id
+ * @property string $email
+ * @property string $phone
+ * @property string $owner_name
+ * @property string $entity
+ * @property string $owner_address
+ * @property string $subject_mark
+ * @property string $case_number
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
  *
  * @SWG\Definition(
  *      definition="Customer",
@@ -57,6 +64,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          type="string"
  *      ),
  *      @SWG\Property(
+ *          property="status",
+ *          description="status",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
  *          property="created_at",
  *          description="created_at",
  *          type="string",
@@ -81,7 +93,7 @@ class Customer extends Model
     use SoftDeletes;
 
     public $table = 'customers';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -95,6 +107,7 @@ class Customer extends Model
         'owner_address',
         'subject_mark',
         'case_number',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at'
@@ -113,37 +126,14 @@ class Customer extends Model
         'entity' => 'string',
         'owner_address' => 'string',
         'subject_mark' => 'string',
-        'case_number' => 'string'
+        'case_number' => 'string',
+        'status' => 'string'
     ];
 
     /**
-     * The objects that should be append to toArray.
-     *
-     * @var array
-     */
-     protected $with = [];
-
-    /**
-     * The attributes that should be append to toArray.
-     *
-     * @var array
-     */
-    protected $appends = [];
-
-    /**
-     * The attributes that should be visible in toArray.
-     *
-     * @var array
-     */
-    protected $visible = [];
-
-    /**
-     * Validation create rules
-     *
-     * @var array
+     * Validation rules
      */
     public static $rules = [
-        'id' => 'required',
         'email' => 'required',
         'phone' => 'required',
         'owner_name' => 'required',
@@ -151,67 +141,5 @@ class Customer extends Model
         'owner_address' => 'required',
         'subject_mark' => 'required',
         'case_number' => 'required',
-        'created_at' => 'required',
-        'updated_at' => 'required',
-        'deleted_at' => 'required'
     ];
-
-    /**
-     * Validation update rules
-     *
-     * @var array
-     */
-    public static $update_rules = [
-        'id' => 'required',
-        'email' => 'required',
-        'phone' => 'required',
-        'owner_name' => 'required',
-        'entity' => 'required',
-        'owner_address' => 'required',
-        'subject_mark' => 'required',
-        'case_number' => 'required',
-        'created_at' => 'required',
-        'updated_at' => 'required',
-        'deleted_at' => 'required'
-    ];
-
-    /**
-     * Validation api rules
-     *
-     * @var array
-     */
-    public static $api_rules = [
-        'id' => 'required',
-        'email' => 'required',
-        'phone' => 'required',
-        'owner_name' => 'required',
-        'entity' => 'required',
-        'owner_address' => 'required',
-        'subject_mark' => 'required',
-        'case_number' => 'required',
-        'created_at' => 'required',
-        'updated_at' => 'required',
-        'deleted_at' => 'required'
-    ];
-	
-	/**
-     * Validation api update rules
-     *
-     * @var array
-     */
-    public static $api_update_rules = [
-        'id' => 'required',
-        'email' => 'required',
-        'phone' => 'required',
-        'owner_name' => 'required',
-        'entity' => 'required',
-        'owner_address' => 'required',
-        'subject_mark' => 'required',
-        'case_number' => 'required',
-        'created_at' => 'required',
-        'updated_at' => 'required',
-        'deleted_at' => 'required'
-    ];
-
-    
 }

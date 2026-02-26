@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property integer id
- * @property string name
- * @property string created_at
- * @property string updated_at
- * @property string deleted_at
+ * @property integer $id
+ * @property string $link
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
  *
  * @SWG\Definition(
  *      definition="Sheet",
@@ -29,8 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      @SWG\Property(
  *          property="status",
  *          description="status",
- *          type="integer",
- *          format="int32"
+ *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="created_at",
@@ -57,13 +57,14 @@ class Sheet extends Model
     use SoftDeletes;
 
     public $table = 'sheets';
-    
+
 
     protected $dates = ['deleted_at'];
 
 
     public $fillable = [
-        'link'
+        'link',
+        'status'
     ];
 
     /**
@@ -74,65 +75,13 @@ class Sheet extends Model
     protected $casts = [
         'id' => 'integer',
         'link' => 'string',
-        'status' => 'integer'
+        'status' => 'string'
     ];
 
     /**
-     * The objects that should be append to toArray.
-     *
-     * @var array
-     */
-     protected $with = [];
-
-    /**
-     * The attributes that should be append to toArray.
-     *
-     * @var array
-     */
-    protected $appends = [];
-
-    /**
-     * The attributes that should be visible in toArray.
-     *
-     * @var array
-     */
-    protected $visible = [];
-
-    /**
-     * Validation create rules
-     *
-     * @var array
+     * Validation rules
      */
     public static $rules = [
         'link' => 'required'
     ];
-
-    /**
-     * Validation update rules
-     *
-     * @var array
-     */
-    public static $update_rules = [
-        'link' => 'required'
-    ];
-
-    /**
-     * Validation api rules
-     *
-     * @var array
-     */
-    public static $api_rules = [
-        'link' => 'required'
-    ];
-	
-	/**
-     * Validation api update rules
-     *
-     * @var array
-     */
-    public static $api_update_rules = [
-        'link' => 'required'
-    ];
-
-    
 }

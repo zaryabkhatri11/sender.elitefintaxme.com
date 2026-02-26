@@ -343,6 +343,7 @@ class SheetController extends AppBaseController
                 'owner_address' => trim($row[4]),
                 'subject_mark' => trim($row[5]),
                 'case_number' => trim($row[6]),
+                'status' => $request->input('customer_status', 'live'),
             ];
 
             // Deduplicate by case_number if available, otherwise by email
