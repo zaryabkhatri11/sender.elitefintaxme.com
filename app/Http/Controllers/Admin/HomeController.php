@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Admin\MenuRepository;
 use App\Repositories\Admin\RoleRepository;
 use App\Repositories\Admin\UserRepository;
+use App\Repositories\Admin\CustomerRepository;
+use App\Repositories\Admin\UDeviceRepository;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,17 +36,31 @@ class HomeController extends Controller
     protected $menuRepository;
 
     /**
+     * @var CustomerRepository
+     */
+    protected $customerRepository;
+
+    /**
+     * @var UDeviceRepository
+     */
+    protected $uDeviceRepository;
+
+    /**
      * HomeController constructor.
      * @param UserRepository $userRepo
      * @param RoleRepository $roleRepo
      * @param MenuRepository $menuRepo
+     * @param CustomerRepository $customerRepo
+     * @param UDeviceRepository $uDeviceRepo
      */
-    public function __construct(UserRepository $userRepo, RoleRepository $roleRepo, MenuRepository $menuRepo)
+    public function __construct(UserRepository $userRepo, RoleRepository $roleRepo, MenuRepository $menuRepo, CustomerRepository $customerRepo, UDeviceRepository $uDeviceRepo)
     {
         $this->middleware('auth');
         $this->userRepository = $userRepo;
         $this->roleRepository = $roleRepo;
         $this->menuRepository = $menuRepo;
+        $this->customerRepository = $customerRepo;
+        $this->uDeviceRepository = $uDeviceRepo;
     }
 
     /**
@@ -80,7 +96,7 @@ class HomeController extends Controller
             ->resetCriteria()
             ->pushCriteria(new UserCriteria([
                 'device_type' => 'android',
-                'graph'       => Util::GRAPH_MONTHLY
+                'graph' => Util::GRAPH_MONTHLY
             ]))
             ->findWhereNotIn('id', [1])
             ->pluck('count', 'month_year')
@@ -90,7 +106,7 @@ class HomeController extends Controller
             ->resetCriteria()
             ->pushCriteria(new UserCriteria([
                 'device_type' => 'ios',
-                'graph'       => Util::GRAPH_MONTHLY
+                'graph' => Util::GRAPH_MONTHLY
             ]))
             ->findWhereNotIn('id', [1])
             ->pluck('count', 'month_year')
@@ -98,7 +114,7 @@ class HomeController extends Controller
 
         $deviceGraph = [];
         for ($i = 1; $i <= 12; $i++) {
-            $month_year    = date("n-Y", strtotime("-$i months"));
+            $month_year = date("n-Y", strtotime("-$i months"));
             $deviceGraph[] = [
                 "y" => $month_year,
                 "a" => isset($graphAndroid[$month_year]) ? $graphAndroid[$month_year] : 0,
@@ -109,10 +125,18 @@ class HomeController extends Controller
         //</editor-fold>
 
         BreadcrumbsRegister::Register();
+
+        $totalCustomers = $this->customerRepository->count();
+        $activeCustomers = $this->customerRepository->findWhere(['status' => 'live'])->count();
+        $latestDevices = $this->uDeviceRepository->with(['user'])->orderBy('created_at', 'desc')->paginate(3);
+
         return view('admin.home')->with(compact(
             'android',
             'ios',
-            'deviceGraph'
+            'deviceGraph',
+            'totalCustomers',
+            'activeCustomers',
+            'latestDevices'
         ));
     }
 }

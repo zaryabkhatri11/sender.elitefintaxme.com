@@ -2,15 +2,158 @@ textarea {
     Resize: vertical
 }
 
-.dataTables_filter {
-    float: right;
+.form-control,
+.btn {
+    border-radius: 8px !important;
 }
 
-.dataTables_info {
+/* Dashboard Card Beautification */
+.small-box {
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none !important;
+    margin-bottom: 25px;
+}
+
+.small-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.small-box .inner {
+    padding: 20px !important;
+}
+
+.small-box h3 {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    margin: 0 0 5px 0 !important;
+    letter-spacing: -1px;
+}
+
+.small-box p {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.small-box .icon {
+    top: 15px !important;
+    right: 15px !important;
+    font-size: 60px !important;
+    opacity: 0.2;
+    transition: transform 0.3s ease;
+}
+
+.small-box:hover .icon {
+    transform: scale(1.1) rotate(-5deg);
+    opacity: 0.3;
+}
+
+.small-box-footer {
+    background: rgba(0, 0, 0, 0.1) !important;
+    padding: 8px 0 !important;
+    text-transform: uppercase;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    border: none !important;
+}
+
+.small-box-footer:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Form Gap Refinements */
+.form-group {
+    margin-bottom: 12px !important;
+}
+
+.form-group label {
+    margin-bottom: 2px !important;
+}
+
+/* Action Icons in One Line */
+td .btn-group {
+    display: inline-flex !important;
+    white-space: nowrap !important;
+}
+
+td .btn-group .btn {
+    margin-right: 2px !important;
+}
+
+/* DataTable Controls in One Line */
+.dt-buttons {
     float: left;
+    margin-right: 15px;
+}
+
+.dataTables_filter {
+    float: right;
+    margin-left: 15px;
 }
 
 .dataTables_length {
     float: right;
-    padding: 0 0 0 5px;
+    padding: 0;
+}
+
+/* Ensure they don't break on small screens easily */
+.dataTables_wrapper .row:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .row:first-child>div {
+    width: auto !important;
+}
+
+/* Dashboard Table Refinements */
+.dashboard-table {
+    margin-bottom: 0;
+}
+
+.dashboard-table thead th {
+    background: #fafafa;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #666;
+    border-bottom: 2px solid #eee !important;
+    padding: 12px 15px !important;
+}
+
+.dashboard-table tbody td {
+    padding: 14px 15px !important;
+    vertical-align: middle !important;
+    border-top: 1px solid #f4f4f4 !important;
+    font-size: 14px;
+}
+
+.dashboard-table tbody tr:hover {
+    background-color: #f9f9f9 !important;
+    transition: background-color 0.2s ease;
+}
+
+.user-avatar-text {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+    color: #555;
+    font-size: 12px;
+}
+
+.dashboard-table .label {
+    padding: .3em .8em .4em;
+    font-size: 85%;
+    font-weight: 600;
+    border-radius: 4px !important;
 }
