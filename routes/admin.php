@@ -68,5 +68,7 @@ Route::resource('videos', 'VideoController');
 Route::resource('sheets', 'SheetController');
 
 Route::resource('customers', 'CustomerController');
+Route::get('customers/{id}/threads', 'CustomerController@threads')->name('customers.threads');
+Route::get('customers/{id}/threads/{thread_id}', 'CustomerController@threadDetail')->name('customers.thread_detail');
 Route::get('customers/{id}/emails', 'CustomerController@emails')->name('customers.emails');
 Route::post('customers/{id}/send-email', 'CustomerController@sendEmail')->name('customers.send_email');

@@ -18,6 +18,7 @@ class CustomerEmailLog extends Model
         'attachment',
         'message_id',
         'in_reply_to',
+        'thread_id',
         'status',
         'error'
     ];

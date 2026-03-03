@@ -81,13 +81,14 @@ class SendEmailJob implements ShouldQueue
                     $messageId = $mail->getId();
                 });
 
-                EmailLog::create([
+                $emailLog = EmailLog::create([
                     'email' => $singleEmail,
                     'serial' => $serial,
                     'status' => 'success'
                 ]);
 
-                // ✅ NEW: Log to CustomerEmailLog
+                // ✅ NEW: Log to CustomerEmailLog with threading
+                $threadId = $messageId; // Default thread_id is the message_id for outgoing
                 CustomerEmailLog::create([
                     'customer_id' => $this->data['customer_id'] ?? null,
                     'direction' => 'outgoing',
@@ -96,6 +97,7 @@ class SendEmailJob implements ShouldQueue
                     'subject' => 'U.S Trademark Application Verification - ' . ($payload['wordmark'] ?: 'Trademark'),
                     'message' => view('email.trademark-notice', $payload)->render(),
                     'message_id' => $messageId,
+                    'thread_id' => $threadId,
                     'status' => 'sent'
                 ]);
 

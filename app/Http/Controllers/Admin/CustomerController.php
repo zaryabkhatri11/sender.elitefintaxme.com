@@ -177,6 +177,14 @@ class CustomerController extends AppBaseController
      */
     public function emails($id)
     {
+        return $this->threads($id);
+    }
+
+    /**
+     * Display unique threads for a customer.
+     */
+    public function threads($id)
+    {
         $customer = $this->customerRepository->findWithoutFail($id);
 
         if (empty($customer)) {
@@ -184,13 +192,49 @@ class CustomerController extends AppBaseController
             return redirect(route('admin.customers.index'));
         }
 
-        $emails = CustomerEmailLog::where('customer_id', $id)->orderBy('created_at', 'desc')->get();
+        // Group by thread_id and get the latest message for each thread
+        $threads = CustomerEmailLog::where('customer_id', $id)
+            ->whereNotNull('thread_id')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('thread_id');
+
+        BreadcrumbsRegister::Register($this->ModelName, $this->BreadCrumbName, $customer);
+        return view('admin.customers.threads')->with([
+            'customer' => $customer,
+            'threads' => $threads,
+            'title' => $this->BreadCrumbName . ' Conversations'
+        ]);
+    }
+
+    /**
+     * Display messages for a specific thread.
+     */
+    public function threadDetail($id, $thread_id)
+    {
+        $customer = $this->customerRepository->findWithoutFail($id);
+
+        if (empty($customer)) {
+            Flash::error($this->BreadCrumbName . ' not found');
+            return redirect(route('admin.customers.index'));
+        }
+
+        $emails = CustomerEmailLog::where('customer_id', $id)
+            ->where('thread_id', $thread_id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        if ($emails->isEmpty()) {
+            Flash::error('Thread not found');
+            return redirect(route('admin.customers.threads', $id));
+        }
 
         BreadcrumbsRegister::Register($this->ModelName, $this->BreadCrumbName, $customer);
         return view('admin.customers.emails')->with([
             'customer' => $customer,
             'emails' => $emails,
-            'title' => $this->BreadCrumbName . ' Email History'
+            'thread_id' => $thread_id,
+            'title' => 'Thread: ' . ($emails->first()->subject ?: 'No Subject')
         ]);
     }
 
@@ -246,8 +290,10 @@ class CustomerController extends AppBaseController
                 'to_email' => $customer->email,
                 'subject' => $subject,
                 'message' => $messageText,
-                'attachment' => $attachment, // Save attachment filename
+                'attachment' => $attachment,
                 'message_id' => $messageId,
+                'in_reply_to' => $request->input('in_reply_to'),
+                'thread_id' => $request->input('thread_id') ?: $messageId,
                 'status' => 'sent'
             ]);
 

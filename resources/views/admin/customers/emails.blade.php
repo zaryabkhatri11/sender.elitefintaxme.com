@@ -199,6 +199,12 @@
             <div class="box-footer">
                 <form id="sendEmailForm">
                     @csrf
+                    <input type="hidden" name="thread_id" value="{{ $thread_id ?? '' }}">
+                    <input type="hidden" name="in_reply_to"
+                        value="{{ isset($emails) && $emails->isNotEmpty() ? $emails->last()->message_id : '' }}">
+                    <input type="hidden" name="subject"
+                        value="{{ isset($emails) && $emails->isNotEmpty() ? $emails->first()->subject : '' }}">
+
                     <div class="form-group" style="margin-bottom: 10px;">
                         @php
                             $attachmentFiles = glob(public_path('attachments/*.*'));
@@ -227,8 +233,11 @@
                 <div id="statusMsg" style="margin-top: 10px; display: none; font-size: 14px; font-weight: 600;"></div>
 
                 <div class="action-buttons">
+                    <a href="{{ route('admin.customers.threads', $customer->id) }}" class="btn btn-default btn-flat-round">
+                        <i class="fa fa-comments"></i> Back to Conversations
+                    </a>
                     <a href="{{ route('admin.customers.index') }}" class="btn btn-default btn-flat-round">
-                        <i class="fa fa-arrow-left"></i> Back to List
+                        <i class="fa fa-arrow-left"></i> Back to Customers
                     </a>
                     <button onclick="window.location.reload();" class="btn btn-default btn-flat-round">
                         <i class="fa fa-refresh"></i> Refresh Thread
@@ -264,14 +273,19 @@
                 btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Sending...');
                 status.hide().removeClass('text-danger text-success');
 
+                var formData = {
+                    _token: "{{ csrf_token() }}",
+                    message: message,
+                    attachment: $('#attachmentSelect').val(),
+                    thread_id: $('input[name="thread_id"]').val(),
+                    in_reply_to: $('input[name="in_reply_to"]').val(),
+                    subject: $('input[name="subject"]').val()
+                };
+
                 $.ajax({
                     url: "{{ route('admin.customers.send_email', $customer->id) }}",
                     type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        message: message,
-                        attachment: $('#attachmentSelect').val()
-                    },
+                    data: formData,
                     success: function (response) {
                         console.log("AJAX Success. Response:", response);
                         btn.prop('disabled', false).html('<i class="fa fa-paper-plane"></i> Send');

@@ -6,7 +6,7 @@
     </a>
     @endability
     @ability('super-admin', 'customers.edit')
-    <a href="{{ route('admin.customers.emails', $id) }}" class='btn btn-default btn-xs' title="Email History">
+    <a href="{{ route('admin.customers.threads', $id) }}" class='btn btn-default btn-xs' title="Conversations">
         <i class="glyphicon glyphicon-envelope"></i>
     </a>
     <a href="{{ route('admin.customers.edit', $id) }}" class='btn btn-default btn-xs'>

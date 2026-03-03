@@ -16,7 +16,7 @@ class CheckAdminPermission
      */
     public function handle($request, Closure $next)
     {
-        $routeName      = str_replace([$request->route()->action['prefix'] . '.', 'store', 'update'], ['', 'create', 'edit'], $request->route()->action['as']);
+        $routeName = str_replace([$request->route()->action['prefix'] . '.', 'store', 'update', 'threads', 'thread_detail'], ['', 'create', 'edit', 'index', 'index'], $request->route()->action['as']);
         $permissionName = ($routeName == "") ? "dashboard" : $routeName;
 
         if (\Auth::guest()) {
@@ -27,9 +27,11 @@ class CheckAdminPermission
                 // Save Current Route to Redirect the user to this.
                 return redirect(route('admin.login'));
             }
-        } else if (\Auth::user() &&
+        } else if (
+            \Auth::user() &&
             \Entrust::ability('super-admin', 'adminpanel') &&
-            (\Entrust::ability(['super-admin'], [$permissionName]))) {
+            (\Entrust::ability(['super-admin'], [$permissionName]))
+        ) {
             return $next($request);
         } else if (\Auth::user() && in_array($routeName, ['logout'])) {
             // Allow the user to logout.

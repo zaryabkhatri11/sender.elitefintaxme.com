@@ -71,6 +71,21 @@ class BreadcrumbsRegister
                     $breadcrumbs->push('History', "");
                 });
 
+                // Home > threads
+                Breadcrumbs::register($prefixes . '.' . $modelName . '.threads', function ($breadcrumbs) use ($model, $routeName, $prefixes) {
+                    $breadcrumbs->parent($routeName . '.index');
+                    $breadcrumbs->push('View', route($routeName . '.show', $model));
+                    $breadcrumbs->push('Conversations', "");
+                });
+
+                // Home > thread_detail
+                Breadcrumbs::register($prefixes . '.' . $modelName . '.thread_detail', function ($breadcrumbs) use ($model, $routeName, $prefixes) {
+                    $breadcrumbs->parent($routeName . '.index');
+                    $breadcrumbs->push('View', route($routeName . '.show', $model));
+                    $breadcrumbs->push('Conversations', route($routeName . '.threads', $model));
+                    $breadcrumbs->push('Thread', "");
+                });
+
                 if ($profile) {
                     // Home > show
                     Breadcrumbs::register($prefixes . '.' . $modelName . '.profile', function ($breadcrumbs) use ($model, $routeName, $prefixes) {
