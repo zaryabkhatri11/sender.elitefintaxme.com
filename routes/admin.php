@@ -72,3 +72,10 @@ Route::get('customers/{id}/threads', 'CustomerController@threads')->name('custom
 Route::get('customers/{id}/threads/{thread_id}', 'CustomerController@threadDetail')->name('customers.thread_detail');
 Route::get('customers/{id}/emails', 'CustomerController@emails')->name('customers.emails');
 Route::post('customers/{id}/send-email', 'CustomerController@sendEmail')->name('customers.send_email');
+
+
+Route::resource('payment-accounts', 'PaymentAccountController');
+
+Route::resource('merchants', 'MerchantController');
+
+Route::resource('invoices', 'InvoiceController');

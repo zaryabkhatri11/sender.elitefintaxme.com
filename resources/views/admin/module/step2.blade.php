@@ -106,94 +106,41 @@
 
     <table class="table-display table table-striped">
         <thead>
-        <tr>
-            {{--<th>Title</th>--}}
-            <th>Name</th>
-            <th width="90px">Type</th>
-            {{--<th>Join (Optional)</th>--}}
-            {{--<th></th>--}}
-            <th width="90px">Width (px)</th>
-            <th width="180px">Action</th>
-        </tr>
+            <tr>
+                {{--<th>Title</th>--}}
+                <th>Name</th>
+                <th width="90px">Type</th>
+                {{--<th>Join (Optional)</th>--}}
+                {{--<th></th>--}}
+                <th width="90px">Width (px)</th>
+                <th width="180px">Action</th>
+            </tr>
         </thead>
         <tbody>
-        @if($module_data != null)
-            @foreach($module_data as $key=>$field)
-                @if($field->inIndex)
-                    <tr>
-                        {{--@if(isset(old('name')[$key]))
-                        @if(old('name')[$key] != null)
-                        <td><input value="{{ old('name')[$key] }}" type="text" name="name[]"
-                        onclick="showNameSuggest(this)" onkeyup="showNameSuggestLike(this)"
-                        placeholder="Field Name" class="name form-control notfocus">
-                        </td>
-                        @else
-                        @continue
-                        @endif
-                        @else
+            @if($module_data != null)
+                @foreach($module_data as $key => $field)
+                    @if($field->inIndex)
+                        <tr>
+                            {{--@if(isset(old('name')[$key]))
+                            @if(old('name')[$key] != null)
+                            <td><input value="{{ old('name')[$key] }}" type="text" name="name[]" onclick="showNameSuggest(this)"
+                                    onkeyup="showNameSuggestLike(this)" placeholder="Field Name" class="name form-control notfocus">
+                            </td>
+                            @else
+                            @continue
+                            @endif
+                            @else
 
-                        @endif--}}
-                        <td>
-                            {{ Form::text('name[]', $value = $field->name, $attributes = ['class'=>'name form-control notfocus', 'onclick'=>'showNameSuggest(this)', 'onkeyup'=>'showNameSuggestLike(this)', 'required']) }}
-                        </td>
-                        {{--<td><input value="{{ $field->Field }}" type="text" name="title[]" onclick="showColumnSuggest(this)"
-                        onkeyup="showColumnSuggestLike(this)" placeholder="Column Name"
-                        class="column form-control notfocus">
-                        </td>--}}
-                        <td>
-                            {{ Form::select('type[]', [
-                                'text' => 'Text',
-                                'bool' => 'Bool',
-                                'download' => 'Downloadable',
-                                'email' => 'Email',
-                                'tel' => 'Tel',
-                                'secrate' => 'Secrate',
-                                'img' => 'Image',
-                                'link' => 'Link',
-                                'small' => 'Small Text',
-                                'medium' => 'Medium Text',
-                                'large' => 'Large Text'
-                                ], 'text', ['class'=>'form-control type select2', 'required']) }}
-                        </td>
-                        <td>
-                            {{ Form::number('width[]', $value = '10', $attributes = ['class'=>'form-control', 'required']) }}
-                        </td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
-                            <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i
-                                        class="fa fa-trash"></i></a>
-                            <a href="javascript:void(0)" class="btn btn-success btn-up"><i
-                                        class="fa fa-arrow-up"></i></a>
-                            <a href="javascript:void(0)" class="btn btn-success btn-down"><i
-                                        class="fa fa-arrow-down"></i></a>
-                        </td>
-                    </tr>
-                @endif
-            @endforeach
-        @else
-            @foreach($tableFields as $key=>$field)
-                <tr>
-                    {{--@if(isset(old('name')[$key]))
-                    @if(old('name')[$key] != null)
-                    <td><input value="{{ old('name')[$key] }}" type="text" name="name[]"
-                    onclick="showNameSuggest(this)" onkeyup="showNameSuggestLike(this)"
-                    placeholder="Field Name" class="name form-control notfocus">
-                    </td>
-                    @else
-                    @continue
-                    @endif
-                    @else
-
-                    @endif--}}
-                    <td>
-                        {{ Form::text('name[]', $value = $field->getName(), $attributes = ['class'=>'name form-control notfocus', 'onclick'=>'showNameSuggest(this)', 'onkeyup'=>'showNameSuggestLike(this)', 'required']) }}
-                    </td>
-                    {{--<td><input value="{{ $field->getName() }}" type="text" name="title[]" onclick="showColumnSuggest(this)"
-                    onkeyup="showColumnSuggestLike(this)" placeholder="Column Name"
-                    class="column form-control notfocus">
-                    </td>--}}
-                    <td>
-                        {{ Form::select('type[]', [
+                            @endif--}}
+                            <td>
+                                {{ Form::text('name[]', $value = $field->name, $attributes = ['class' => 'name form-control notfocus', 'onclick' => 'showNameSuggest(this)', 'onkeyup' => 'showNameSuggestLike(this)', 'required']) }}
+                            </td>
+                            {{--<td><input value="{{ $field->Field }}" type="text" name="title[]" onclick="showColumnSuggest(this)"
+                                    onkeyup="showColumnSuggestLike(this)" placeholder="Column Name"
+                                    class="column form-control notfocus">
+                            </td>--}}
+                            <td>
+                                {{ Form::select('type[]', [
                             'text' => 'Text',
                             'bool' => 'Bool',
                             'download' => 'Downloadable',
@@ -205,82 +152,134 @@
                             'small' => 'Small Text',
                             'medium' => 'Medium Text',
                             'large' => 'Large Text'
-                            ], 'text', ['class'=>'form-control type select2', 'required']) }}
-                    </td>
-                    {{--<td>--}}
-                    {{--{{ Form::select('join_table[]', $tables, '', ['class'=>'form-control join_table select2', 'placeholder'=> 'Input Field Name']) }}--}}
-                    {{--</td>--}}
-                    {{--<td>--}}
-                    {{--<input value='' type='text' name='join_field[]' onclick='showTableField(this)'--}}
-                    {{--onKeyUp='showTableFieldLike(this)' placeholder='Field Name Shown'--}}
-                    {{--class='join_field form-control notfocus' value=''/>--}}
-                    {{--</td>--}}
-                    {{--<td>
-                        {{ Form::select('join_table[]', $tables, '', ['class'=>'form-control join_table select2', 'required', 'placeholder'=> 'Input Field Name']) }}
-                    </td>
-                    <td>
-                        {{ Form::select('join_fields[]', $tables, '', ['class'=>'form-control join_fields select2', 'required', 'placeholder'=> 'Input Field Name']) }}
-                    </td>--}}
-                    <td>
-                        {{ Form::number('width[]', $value = '10', $attributes = ['class'=>'form-control', 'required']) }}
-                    </td>
-                    <td>
-                        <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
-                        <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></a>
-                        <a href="javascript:void(0)" class="btn btn-success btn-up"><i class="fa fa-arrow-up"></i></a>
-                        <a href="javascript:void(0)" class="btn btn-success btn-down"><i
-                                    class="fa fa-arrow-down"></i></a>
-                    </td>
-                </tr>
-            @endforeach
-        @endif
-        <tr id="tr-sample" style="display:none">
-            {{--<td><input type="text" name="title[]" onclick="showColumnSuggest(this)"
-                       onkeyup="showColumnSuggestLike(this)" placeholder="Column Name"
-                       class="column form-control notfocus" value=""></td>--}}
-            <td>
-                {{ Form::text('name[]',
-                    $value = null,
-                    $attributes = [
-                        'class'=> 'name form-control notfocus',
-                        'onclick'=> 'showNameSuggest(this)',
-                        'onkeyup'=> 'showNameSuggestLike(this)',
-                        'placeholder'=> 'Input Field Name',
-                        'required']
-                    )
+                        ], 'text', ['class' => 'form-control type select2', 'required']) }}
+                            </td>
+                            <td>
+                                {{ Form::number('width[]', $value = '10', $attributes = ['class' => 'form-control', 'required']) }}
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-success btn-up"><i class="fa fa-arrow-up"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-success btn-down"><i class="fa fa-arrow-down"></i></a>
+                            </td>
+                        </tr>
+                    @endif
+                @endforeach
+            @else
+                @foreach($tableFields as $key => $field)
+                        <tr>
+                            {{--@if(isset(old('name')[$key]))
+                            @if(old('name')[$key] != null)
+                            <td><input value="{{ old('name')[$key] }}" type="text" name="name[]" onclick="showNameSuggest(this)"
+                                    onkeyup="showNameSuggestLike(this)" placeholder="Field Name" class="name form-control notfocus">
+                            </td>
+                            @else
+                            @continue
+                            @endif
+                            @else
+
+                            @endif--}}
+                            <td>
+                                {{ Form::text('name[]', $value = $field->getName(), $attributes = ['class' => 'name form-control notfocus', 'onclick' => 'showNameSuggest(this)', 'onkeyup' => 'showNameSuggestLike(this)', 'required']) }}
+                            </td>
+                            {{--<td><input value="{{ $field->getName() }}" type="text" name="title[]"
+                                    onclick="showColumnSuggest(this)" onkeyup="showColumnSuggestLike(this)"
+                                    placeholder="Column Name" class="column form-control notfocus">
+                            </td>--}}
+                            <td>
+                                {{ Form::select('type[]', [
+                        'text' => 'Text',
+                        'bool' => 'Bool',
+                        'download' => 'Downloadable',
+                        'email' => 'Email',
+                        'tel' => 'Tel',
+                        'secrate' => 'Secrate',
+                        'img' => 'Image',
+                        'link' => 'Link',
+                        'small' => 'Small Text',
+                        'medium' => 'Medium Text',
+                        'large' => 'Large Text'
+                    ], 'text', ['class' => 'form-control type select2', 'required']) }}
+                            </td>
+                            {{--<td>--}}
+                                {{--{{ Form::select('join_table[]', $tables, '', ['class'=>'form-control join_table select2',
+                                'placeholder'=> 'Input Field Name']) }}--}}
+                                {{--</td>--}}
+                            {{--<td>--}}
+                                {{--<input value='' type='text' name='join_field[]' onclick='showTableField(this)' --}}
+                                    {{--onKeyUp='showTableFieldLike(this)' placeholder='Field Name Shown' --}}
+                                    {{--class='join_field form-control notfocus' value='' />--}}
+                                {{--</td>--}}
+                            {{--<td>
+                                {{ Form::select('join_table[]', $tables, '', ['class'=>'form-control join_table select2',
+                                'required', 'placeholder'=> 'Input Field Name']) }}
+                            </td>
+                            <td>
+                                {{ Form::select('join_fields[]', $tables, '', ['class'=>'form-control join_fields select2',
+                                'required', 'placeholder'=> 'Input Field Name']) }}
+                            </td>--}}
+                            <td>
+                                {{ Form::number('width[]', $value = '10', $attributes = ['class' => 'form-control', 'required']) }}
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-success btn-up"><i class="fa fa-arrow-up"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-success btn-down"><i class="fa fa-arrow-down"></i></a>
+                            </td>
+                        </tr>
+                @endforeach
+            @endif
+            <tr id="tr-sample" style="display:none">
+                {{--<td><input type="text" name="title[]" onclick="showColumnSuggest(this)"
+                        onkeyup="showColumnSuggestLike(this)" placeholder="Column Name"
+                        class="column form-control notfocus" value=""></td>--}}
+                <td>
+                    {{ Form::text(
+    'name[]',
+    $value = null,
+    $attributes = [
+        'class' => 'name form-control notfocus',
+        'onclick' => 'showNameSuggest(this)',
+        'onkeyup' => 'showNameSuggestLike(this)',
+        'placeholder' => 'Input Field Name',
+        'required'
+    ]
+)
                 }}
-            </td>
-            <td>
-                {{ Form::select('type[]', [
-                    'text' => 'Text',
-                    'bool' => 'Bool',
-                    'download' => 'Downloadable',
-                    'email' => 'Email',
-                    'tel' => 'Tel',
-                    'secrate' => 'Secrate',
-                    'img' => 'Image',
-                    'link' => 'Link',
-                    'small' => 'Small Text',
-                    'medium' => 'Medium Text',
-                    'large' => 'Large Text'
-                    ], 'text', ['class'=>'form-control type select2', 'required']) }}
-            </td>
-            <td>
-                {{ Form::number('width[]', $value = '0', $attributes = ['class'=>'form-control', 'required']) }}
-            </td>
-            <td>
-                <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></a>
-                <a href="javascript:void(0)" class="btn btn-success btn-up"><i class="fa fa-arrow-up"></i></a>
-                <a href="javascript:void(0)" class="btn btn-success btn-down"><i class="fa fa-arrow-down"></i></a>
-            </td>
-        </tr>
+                </td>
+                <td>
+                    {{ Form::select('type[]', [
+    'text' => 'Text',
+    'bool' => 'Bool',
+    'download' => 'Downloadable',
+    'email' => 'Email',
+    'tel' => 'Tel',
+    'secrate' => 'Secrate',
+    'img' => 'Image',
+    'link' => 'Link',
+    'small' => 'Small Text',
+    'medium' => 'Medium Text',
+    'large' => 'Large Text'
+], 'text', ['class' => 'form-control type select2', 'required']) }}
+                </td>
+                <td>
+                    {{ Form::number('width[]', $value = '0', $attributes = ['class' => 'form-control', 'required']) }}
+                </td>
+                <td>
+                    <a href="javascript:void(0)" class="btn btn-info btn-plus"><i class="fa fa-plus"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="fa fa-trash"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-success btn-up"><i class="fa fa-arrow-up"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-success btn-down"><i class="fa fa-arrow-down"></i></a>
+                </td>
+            </tr>
         </tbody>
     </table>
     <div class="box-footer">
-        @php($back=url('admin/module/step1/'.$id))
-        {{ Form::button('Back',['class'=>'btn', 'onclick'=>"window.location='".$back."'"]) }}
-        {{ Form::submit('Next Step 3',['class'=>'btn btn-primary delete-sample']) }}
+        @php($back = url('admin/module/step1/' . $id))
+        {{ Form::button('Back', ['class' => 'btn', 'onclick' => "window.location='" . $back . "'"]) }}
+        {{ Form::submit('Next Step 3', ['class' => 'btn btn-primary delete-sample']) }}
     </div>
     {{ Form::close() }}
 </div>

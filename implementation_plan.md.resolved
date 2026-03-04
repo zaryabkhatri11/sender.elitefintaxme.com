@@ -1,0 +1,94 @@
+# Multi-Merchant Invoice Payment System Implementation Plan
+
+This plan details the technical steps to build a scalable multi-merchant invoicing and payment system within the existing Laravel 5.8 admin panel, initially supporting Square and PayPal.
+
+## Goal Description
+
+Build a system where admins can manage payment gateway configurations, merchants, and invoices. It will generate a secure public link for customers to view and pay their invoices, dynamically routing the payment through the appropriate gateway (Square or PayPal) based on the merchant's assigned account.
+
+## User Review Required
+
+> [!NOTE]
+> We are using the official `square/square` and `paypal/rest-api-sdk-php` SDKs as requested. Database tables will be created manually via SQL queries instead of Laravel Migrations.
+
+## Proposed Changes
+
+### Database & Models
+- Use the provided [database_schema.sql](file:///C:/Users/Adil%20Dev/.gemini/antigravity/brain/b304820d-10a3-42b1-ab4e-19aec13a77f1/database_schema.sql) to manually create the `payment_accounts`, `merchants`, and `invoices` tables in your database.
+
+#### [NEW] `app/Models/PaymentAccount.php`
+
+#### [NEW] `app/Models/Merchant.php`
+
+#### [NEW] `app/Models/Invoice.php`
+
+---
+
+### Admin Interface (Backend)
+
+#### [NEW] `app/Http/Controllers/Admin/PaymentAccountController.php`
+
+#### [NEW] `app/Http/Controllers/Admin/MerchantController.php`
+
+#### [NEW] `app/Http/Controllers/Admin/InvoiceController.php`
+
+- Standard CRUD controllers using `Illuminate\Http\Request` and standard Eloquent.
+
+#### [NEW] Admin Views
+
+- `resources/views/admin/payment_accounts/` (index.blade.php, create.blade.php, edit.blade.php, form.blade.php)
+- `resources/views/admin/merchants/` (index.blade.php, create.blade.php, edit.blade.php, form.blade.php)
+- `resources/views/admin/invoices/` (index.blade.php, create.blade.php, edit.blade.php, form.blade.php)
+
+#### [MODIFY] [routes/web.php](file:///c:/laragon/www/sender.elitefintaxme.com/routes/web.php)
+
+- Add guarded resource routes within the existing `['prefix' => 'admin', 'middleware' => ['auth']]` group.
+
+---
+
+### Payment Service Architecture
+
+#### [NEW] `app/Services/Payment/PaymentGatewayInterface.php`
+
+- `public function charge(Invoice $invoice, array $requestData): bool;`
+
+#### [NEW] `app/Services/Payment/SquareGateway.php`
+
+- Implements interface; securely processes card nonce via Square v2 Payments API.
+
+#### [NEW] `app/Services/Payment/PayPalGateway.php`
+
+- Implements interface; builds redirect/capture flow or direct Capture using PayPal Orders API.
+
+#### [NEW] `app/Services/Payment/GatewayFactory.php`
+
+- Resolves and instantiates the correct Gateway class based on the invoice's merchant's `payment_account_id`.
+
+---
+
+### Public Payment Interface (Frontend)
+
+#### [NEW] `app/Http/Controllers/PaymentController.php`
+
+- `show($uuid)`: Validates the token and shows the customer-facing payment screen.
+- `process($uuid, Request $request)`: Receives payment token/nonce securely, routes to GatewayFactory, updates invoice, and shows success/error messages.
+
+#### [NEW] `resources/views/payment/show.blade.php`
+
+- Contains form, integrates Square Web Payments SDK script or PayPal Smart Buttons gracefully depending on the invoice's target gateway.
+
+#### [MODIFY] [routes/web.php](file:///c:/laragon/www/sender.elitefintaxme.com/routes/web.php)
+
+- Add public endpoints: `GET /pay/{uuid}` and `POST /pay/{uuid}/process`.
+
+## Verification Plan
+
+### Manual Verification
+
+1. Log into the existing admin interface.
+2. Navigate to Payment Accounts, try creating a "Square Sandbox" account with test credentials.
+3. Create a Merchant and assign the "Square Sandbox" payment account.
+4. Create an Invoice for 100.00 USD.
+5. Visit the generated public URL (`/pay/{uuid}`).
+6. Complete payment using Square's test card numbers.
+7. Confirm the invoice status changes from "pending" to "paid" in the admin dashboard and DB.

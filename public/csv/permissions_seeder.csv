@@ -107,3 +107,18 @@ customers.create,29,Customers,"Create Customers",0
 customers.show,29,Customers,"Show Customers",0
 customers.edit,29,Customers,"Edit Customers",0
 customers.destroy,29,Customers,"Destroy Customers",0
+payment-accounts.index,30,"Payment Accounts","Index Payment Accounts",0
+payment-accounts.create,30,"Payment Accounts","Create Payment Accounts",0
+payment-accounts.show,30,"Payment Accounts","Show Payment Accounts",0
+payment-accounts.edit,30,"Payment Accounts","Edit Payment Accounts",0
+payment-accounts.destroy,30,"Payment Accounts","Destroy Payment Accounts",0
+merchants.index,31,Merchants,"Index Merchants",0
+merchants.create,31,Merchants,"Create Merchants",0
+merchants.show,31,Merchants,"Show Merchants",0
+merchants.edit,31,Merchants,"Edit Merchants",0
+merchants.destroy,31,Merchants,"Destroy Merchants",0
+invoices.index,32,Invoices,"Index Invoices",0
+invoices.create,32,Invoices,"Create Invoices",0
+invoices.show,32,Invoices,"Show Invoices",0
+invoices.edit,32,Invoices,"Edit Invoices",0
+invoices.destroy,32,Invoices,"Destroy Invoices",0

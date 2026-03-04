@@ -126,3 +126,9 @@ Route::resource('v1/customers', 'CustomerAPIController');
 
 // Webhook for incoming email replies
 Route::post('v1/emails/reply', 'EmailReplyController@handle')->name('emails.reply');
+
+Route::resource('v1/payment-accounts', 'PaymentAccountAPIController');
+
+Route::resource('v1/merchants', 'MerchantAPIController');
+
+Route::resource('v1/invoices', 'InvoiceAPIController');
