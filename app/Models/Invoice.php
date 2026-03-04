@@ -60,7 +60,7 @@ class Invoice extends Model
     use SoftDeletes;
 
     public $table = 'invoices';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -95,7 +95,7 @@ class Invoice extends Model
      *
      * @var array
      */
-     protected $with = [];
+    protected $with = [];
 
     /**
      * The attributes that should be append to toArray.
@@ -161,8 +161,8 @@ class Invoice extends Model
         'created_at' => 'required',
         'updated_at' => 'required'
     ];
-	
-	/**
+
+    /**
      * Validation api update rules
      *
      * @var array
@@ -179,5 +179,5 @@ class Invoice extends Model
         'updated_at' => 'required'
     ];
 
-    
+
 }

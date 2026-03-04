@@ -18,6 +18,10 @@ class AppServiceProvider extends ServiceProvider
         App::setLocale('en');
         Schema::defaultStringLength(191);
 
+        if (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'ngrok')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // 👇 ADD THIS BLOCK
         try {
             DB::connection()->getDoctrineSchemaManager()

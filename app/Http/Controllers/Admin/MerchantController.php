@@ -7,9 +7,13 @@ use App\DataTables\Admin\MerchantDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMerchantRequest;
 use App\Http\Requests\Admin\UpdateMerchantRequest;
+use App\Repositories\Admin\InvoiceRepository;
 use App\Repositories\Admin\MerchantRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Models\PaymentAccount;
+use App\Services\PaymentGatewayService;
+use Exception;
+use GuzzleHttp\Exception\ClientException;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Response;
 
@@ -24,9 +28,10 @@ class MerchantController extends AppBaseController
     /** @var  MerchantRepository */
     private $merchantRepository;
 
-    public function __construct(MerchantRepository $merchantRepo)
+    public function __construct(MerchantRepository $merchantRepo, InvoiceRepository $invoiceRepository)
     {
         $this->merchantRepository = $merchantRepo;
+        $this->invoiceRepository = $invoiceRepository;
         $this->ModelName = 'merchants';
         $this->BreadCrumbName = 'Merchants';
     }
@@ -62,9 +67,49 @@ class MerchantController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateMerchantRequest $request)
+    public function store(CreateMerchantRequest $request, PaymentGatewayService $gatewayService)
     {
-        $merchant = $this->merchantRepository->saveRecord($request);
+        try {
+            $paymentAccount = PaymentAccount::where('id', $request->payment_account_id)
+                ->where('is_active', 1)
+                ->first();
+
+            if (!$paymentAccount) {
+                throw new Exception('Payment account not found');
+            }
+
+            $merchant = $this->merchantRepository->saveRecord($request);
+
+            if (in_array($paymentAccount->gateway, ['paypal', 'square'])) {
+                $invoiceData = $gatewayService->createInvoice(
+                    $paymentAccount,
+                    $request->amount,
+                    $request->email,
+                    $request->name
+                );
+
+                $merchant->payment_link = $invoiceData['payment_link'];
+                $merchant->save();
+
+                \App\Models\Invoice::create([
+                    'merchant_id' => $merchant->id,
+                    'uuid' => $invoiceData['invoice_id'],
+                    'amount' => $request->amount,
+                    'currency' => 'USD',
+                    'description' => "Invoice Record For Merchant " . $merchant->name,
+                    'status' => 'pending'
+                ]);
+            }
+
+        } catch (ClientException $e) {
+            $errorBody = $e->getResponse()->getBody()->getContents();
+            $errorData = json_decode($errorBody, true);
+            Flash::error('Gateway Error: ' . ($errorData['message'] ?? $e->getMessage()));
+            return redirect(route('admin.merchants.index'));
+        } catch (Exception $e) {
+            Flash::error('Error: ' . $e->getMessage());
+            return redirect(route('admin.merchants.index'));
+        }
 
         Flash::success($this->BreadCrumbName . ' saved successfully.');
         if (isset($request->continue)) {

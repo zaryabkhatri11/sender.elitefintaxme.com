@@ -132,3 +132,7 @@ Route::resource('v1/payment-accounts', 'PaymentAccountAPIController');
 Route::resource('v1/merchants', 'MerchantAPIController');
 
 Route::resource('v1/invoices', 'InvoiceAPIController');
+
+// Webhooks
+Route::post('v1/webhooks/paypal', 'WebhookController@paypal')->name('webhooks.paypal');
+Route::post('v1/webhooks/square', 'WebhookController@square')->name('webhooks.square');

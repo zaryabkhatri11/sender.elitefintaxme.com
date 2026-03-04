@@ -27,6 +27,13 @@ class MerchantDataTable extends DataTable
             ->editColumn('payment_account_id', function ($model) {
                 return $model->paymentAccount ? $model->paymentAccount->name : $model->payment_account_id;
             })
+            ->editColumn('payment_link', function ($model) {
+                if ($model->payment_link) {
+                    return '<a href="' . $model->payment_link . '" target="_blank" class="btn btn-xs btn-success">View Invoice</a>';
+                }
+                return '<span class="label label-default">N/A</span>';
+            })
+            ->rawColumns(['payment_link', 'action'])
             ->addColumn('action', 'admin.merchants.datatables_actions');
     }
 
@@ -81,6 +88,7 @@ class MerchantDataTable extends DataTable
             'name',
             'email',
             'payment_account_id' => ['title' => 'Payment Account'],
+            'payment_link' => ['title' => 'Payment Link'],
             'created_at',
             'updated_at'
         ];

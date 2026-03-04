@@ -54,7 +54,8 @@ class Merchant extends Model
     public $fillable = [
         'payment_account_id',
         'name',
-        'email'
+        'email',
+        'payment_link'
     ];
 
     /**
@@ -96,7 +97,8 @@ class Merchant extends Model
     public static $rules = [
         'payment_account_id' => 'required',
         'name' => 'required',
-        'email' => 'required|email'
+        'email' => 'required|email',
+        'amount' => 'required|numeric|min:0.01'
     ];
 
     /**

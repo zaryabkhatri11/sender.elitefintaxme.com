@@ -16,6 +16,12 @@
     {!! Form::select('payment_account_id', $paymentAccounts, null, ['class' => 'form-control', 'placeholder' => 'Select Payment Account', 'required']) !!}
 </div>
 
+<!-- Amount Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('amount', 'Invoice Amount (USD):') !!}
+    {!! Form::number('amount', null, ['class' => 'form-control', 'placeholder' => 'Enter amount e.g. 100.00', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
+</div>
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12 mt-3">
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}

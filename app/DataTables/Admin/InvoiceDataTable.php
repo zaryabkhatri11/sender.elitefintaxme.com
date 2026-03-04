@@ -59,8 +59,8 @@ class InvoiceDataTable extends DataTable
             ->minifiedAjax()
             ->addAction(['width' => '80px', 'printable' => false])
             ->parameters(array_merge(Util::getDataTableParams(), [
-                'dom'     => 'Blfrtip',
-                'order'   => [[0, 'desc']],
+                'dom' => 'Blfrtip',
+                'order' => [[0, 'desc']],
                 'buttons' => $buttons,
             ]));
     }
