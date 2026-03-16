@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property integer id
- * @property string name
- * @property string created_at
- * @property string updated_at
- * @property string deleted_at
+ * @property integer $id
+ * @property string $name
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
  *
  * @SWG\Definition(
  *      definition="Invoice",
@@ -180,4 +180,8 @@ class Invoice extends Model
     ];
 
 
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id');
+    }
 }

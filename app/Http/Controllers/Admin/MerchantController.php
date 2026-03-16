@@ -11,6 +11,7 @@ use App\Repositories\Admin\InvoiceRepository;
 use App\Repositories\Admin\MerchantRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Models\PaymentAccount;
+use App\Models\Customer;
 use App\Services\PaymentGatewayService;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
@@ -33,7 +34,7 @@ class MerchantController extends AppBaseController
         $this->merchantRepository = $merchantRepo;
         $this->invoiceRepository = $invoiceRepository;
         $this->ModelName = 'merchants';
-        $this->BreadCrumbName = 'Merchants';
+        $this->BreadCrumbName = 'Invoices';
     }
 
     /**
@@ -57,7 +58,8 @@ class MerchantController extends AppBaseController
     {
         BreadcrumbsRegister::Register($this->ModelName, $this->BreadCrumbName);
         $paymentAccounts = PaymentAccount::where('is_active', 1)->pluck('name', 'id');
-        return view('admin.merchants.create')->with(['title' => $this->BreadCrumbName, 'paymentAccounts' => $paymentAccounts]);
+        $customers = Customer::pluck('owner_name', 'id');
+        return view('admin.merchants.create')->with(['title' => $this->BreadCrumbName, 'paymentAccounts' => $paymentAccounts, 'customers' => $customers]);
     }
 
     /**
@@ -96,7 +98,7 @@ class MerchantController extends AppBaseController
                     'uuid' => $invoiceData['invoice_id'],
                     'amount' => $request->amount,
                     'currency' => 'USD',
-                    'description' => "Invoice Record For Merchant " . $merchant->name,
+                    'description' => "Invoice Record For " . $merchant->name,
                     'status' => 'pending'
                 ]);
             }
@@ -162,7 +164,8 @@ class MerchantController extends AppBaseController
 
         BreadcrumbsRegister::Register($this->ModelName, $this->BreadCrumbName, $merchant);
         $paymentAccounts = PaymentAccount::where('is_active', 1)->pluck('name', 'id');
-        return view('admin.merchants.edit')->with(['merchant' => $merchant, 'title' => $this->BreadCrumbName, 'paymentAccounts' => $paymentAccounts]);
+        $customers = Customer::pluck('owner_name', 'id');
+        return view('admin.merchants.edit')->with(['merchant' => $merchant, 'title' => $this->BreadCrumbName, 'paymentAccounts' => $paymentAccounts, 'customers' => $customers]);
     }
 
     /**

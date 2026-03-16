@@ -27,13 +27,28 @@ class MerchantDataTable extends DataTable
             ->editColumn('payment_account_id', function ($model) {
                 return $model->paymentAccount ? $model->paymentAccount->name : $model->payment_account_id;
             })
+            ->addColumn('customer_name', function ($model) {
+                return $model->customer ? $model->customer->owner_name : 'N/A';
+            })
             ->editColumn('payment_link', function ($model) {
                 if ($model->payment_link) {
                     return '<a href="' . $model->payment_link . '" target="_blank" class="btn btn-xs btn-success">View Invoice</a>';
                 }
                 return '<span class="label label-default">N/A</span>';
             })
-            ->rawColumns(['payment_link', 'action'])
+            ->addColumn('invoice_amount', function ($model) {
+                $invoice = $model->invoices->sortByDesc('created_at')->first();
+                return $invoice ? $invoice->amount . ' ' . $invoice->currency : 'N/A';
+            })
+            ->addColumn('invoice_status', function ($model) {
+                $invoice = $model->invoices->sortByDesc('created_at')->first();
+                if ($invoice) {
+                    $color = $invoice->status == 'paid' ? 'success' : ($invoice->status == 'pending' ? 'warning' : 'danger');
+                    return '<span class="label label-' . $color . '">' . ucfirst($invoice->status) . '</span>';
+                }
+                return 'N/A';
+            })
+            ->rawColumns(['payment_link', 'action', 'invoice_status'])
             ->addColumn('action', 'admin.merchants.datatables_actions');
     }
 
@@ -45,7 +60,7 @@ class MerchantDataTable extends DataTable
      */
     public function query(Merchant $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['paymentAccount', 'invoices', 'customer']);
     }
 
     /**
@@ -87,7 +102,10 @@ class MerchantDataTable extends DataTable
             'id',
             'name',
             'email',
+            'customer_name' => ['title' => 'Customer', 'searchable' => false, 'orderable' => false],
             'payment_account_id' => ['title' => 'Payment Account'],
+            'invoice_amount' => ['title' => 'Invoice Amount', 'searchable' => false, 'orderable' => false],
+            'invoice_status' => ['title' => 'Invoice Status', 'searchable' => false, 'orderable' => false],
             'payment_link' => ['title' => 'Payment Link'],
             'created_at',
             'updated_at'
@@ -101,6 +119,6 @@ class MerchantDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'merchantsdatatable_' . time();
+        return 'invoicesdatatable_' . time();
     }
 }

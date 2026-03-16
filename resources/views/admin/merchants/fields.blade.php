@@ -16,6 +16,12 @@
     {!! Form::select('payment_account_id', $paymentAccounts, null, ['class' => 'form-control', 'placeholder' => 'Select Payment Account', 'required']) !!}
 </div>
 
+<!-- Customer Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('customer_id', 'Customer:') !!}
+    {!! Form::select('customer_id', $customers, null, ['class' => 'form-control', 'placeholder' => 'Select Customer', 'required']) !!}
+</div>
+
 <!-- Amount Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('amount', 'Invoice Amount (USD):') !!}

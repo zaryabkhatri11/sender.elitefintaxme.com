@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Merchant findWithoutFail($id, $columns = ['*'])
  * @method Merchant find($id, $columns = ['*'])
  * @method Merchant first($columns = ['*'])
-*/
+ */
 class MerchantRepository extends BaseRepository
 {
     /**
@@ -22,6 +22,7 @@ class MerchantRepository extends BaseRepository
     protected $fieldSearchable = [
         'id',
         'payment_account_id',
+        'customer_id',
         'name',
         'email',
         'created_at',

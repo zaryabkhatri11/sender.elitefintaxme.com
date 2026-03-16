@@ -6,6 +6,10 @@
 <dt>{!! Form::label('payment_account_id', 'Payment Account:') !!}</dt>
 <dd>{!! $merchant->paymentAccount ? $merchant->paymentAccount->name : $merchant->payment_account_id !!}</dd>
 
+<!-- Customer Id Field -->
+<dt>{!! Form::label('customer_id', 'Customer:') !!}</dt>
+<dd>{!! $merchant->customer ? $merchant->customer->owner_name : 'N/A' !!}</dd>
+
 <!-- Name Field -->
 <dt>{!! Form::label('name', 'Name:') !!}</dt>
 <dd>{!! $merchant->name !!}</dd>

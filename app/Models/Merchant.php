@@ -53,6 +53,7 @@ class Merchant extends Model
 
     public $fillable = [
         'payment_account_id',
+        'customer_id',
         'name',
         'email',
         'payment_link'
@@ -65,7 +66,8 @@ class Merchant extends Model
      */
     protected $casts = [
         'name' => 'string',
-        'email' => 'string'
+        'email' => 'string',
+        'customer_id' => 'integer'
     ];
 
     /**
@@ -96,6 +98,7 @@ class Merchant extends Model
      */
     public static $rules = [
         'payment_account_id' => 'required',
+        'customer_id' => 'required',
         'name' => 'required',
         'email' => 'required|email',
         'amount' => 'required|numeric|min:0.01'
@@ -140,5 +143,15 @@ class Merchant extends Model
     public function paymentAccount()
     {
         return $this->belongsTo(PaymentAccount::class, 'payment_account_id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }
