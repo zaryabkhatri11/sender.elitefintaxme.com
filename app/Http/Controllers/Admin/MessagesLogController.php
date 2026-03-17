@@ -167,7 +167,8 @@ class MessagesLogController extends AppBaseController
 
         if ($messagesLog->customer_id) {
             $messages = \App\Models\MessagesLog::where('customer_id', $messagesLog->customer_id)
-                ->orderBy('created_at', 'asc')
+                ->get();
+            $calls = \App\Models\CallLog::where('customer_id', $messagesLog->customer_id)
                 ->get();
         } else {
             // Match by phone if no customer is linked
@@ -176,14 +177,21 @@ class MessagesLogController extends AppBaseController
                     $q->where('to_num', $phone)->orWhere('from_num', $phone);
                 })
                 ->whereNull('customer_id')
-                ->orderBy('created_at', 'asc')
+                ->get();
+            $calls = \App\Models\CallLog::where(function($q) use ($phone) {
+                    $q->where('to_num', $phone)->orWhere('from_num', $phone);
+                })
+                ->whereNull('customer_id')
                 ->get();
         }
+
+        // Merge and sort chronologically
+        $combinedTimeline = $messages->concat($calls)->sortBy('created_at');
 
         BreadcrumbsRegister::Register($this->ModelName, $this->BreadCrumbName, $messagesLog);
         return view('admin.messages_logs.show')->with([
             'messagesLog' => $messagesLog,
-            'messages' => $messages,
+            'messages' => $combinedTimeline,
             'title' => $this->BreadCrumbName
         ]);
     }
@@ -268,25 +276,40 @@ class MessagesLogController extends AppBaseController
     public function initiateCall(\Illuminate\Http\Request $request)
     {
         $to = $request->input('to_num');
+        $adminPhone = $request->input('admin_phone');
         $customerId = $request->input('customer_id');
         
-        $twilio = new TwilioService();
-        $twimlUrl = route('api.webhooks.twilio.voice', ['To' => $to]);
-        $statusCallback = route('api.webhooks.twilio.call-status');
+        if (!$adminPhone) {
+            return response()->json(['success' => false, 'message' => 'Please provide your phone number first.']);
+        }
 
-        $result = $twilio->makeCall($to, $twimlUrl, $statusCallback);
+        $twilio = new TwilioService();
+        // Force HTTPS for the bridge URL to ensure Twilio can reach it securely
+        $bridgeUrl = route('api.webhooks.twilio.bridge-voice', ['customer_num' => $to]);
+        if (strpos($bridgeUrl, 'http://') === 0) {
+            $bridgeUrl = str_replace('http://', 'https://', $bridgeUrl);
+        }
+        $statusCallback = route('api.webhooks.twilio.call-status');
+        if (strpos($statusCallback, 'http://') === 0) {
+            $statusCallback = str_replace('http://', 'https://', $statusCallback);
+        }
+
+        \Log::info("Initiating Bridge Call: Admin=$adminPhone -> Customer=$to via BridgeUrl=$bridgeUrl");
+
+        // Bridge: Call Admin -> When answered -> Connect to Customer
+        $result = $twilio->bridgeCall($adminPhone, $to, $bridgeUrl, $statusCallback);
 
         if ($result['success']) {
             CallLog::create([
                 'user_id' => \Auth::id(),
                 'customer_id' => $customerId,
-                'from_num' => env('TWILIO_NUMBER'),
-                'to_num' => $to,
+                'from_num' => $adminPhone, // Leg 1: Admin
+                'to_num' => $to,           // Leg 2: Customer
                 'call_sid' => $result['sid'],
                 'status' => $result['status']
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Call initiated successfully.']);
+            return response()->json(['success' => true, 'message' => 'Calling your phone now... Please answer to be connected.']);
         }
 
         $errorMessage = $result['error'] ?? ($result['message'] ?? 'Unknown error');

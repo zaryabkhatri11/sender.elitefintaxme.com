@@ -88,6 +88,30 @@
         justify-content: center;
         font-weight: bold;
     }
+    .message-call {
+        align-self: center;
+        background: #e1f5fe;
+        color: #01579b;
+        border-radius: 8px;
+        font-size: 13px;
+        padding: 6px 12px;
+        margin: 10px 0;
+        border: 1px solid #b3e5fc;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .call-icon {
+        background: #008069;
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+    }
 </style>
 @endpush
 
@@ -120,12 +144,27 @@
                 <div class="chat-container">
                     <div class="chat-messages" id="chat-messages">
                         @forelse($messages as $msg)
-                            <div class="message-bubble {{ $msg->direction == 'outbound' ? 'message-outbound' : 'message-inbound' }}">
-                                {{ $msg->body }}
-                                <span class="message-time">
-                                    {{ $msg->created_at->format('H:i') }}
-                                </span>
-                            </div>
+                            @if($msg instanceof \App\Models\CallLog)
+                                <div class="message-bubble message-call">
+                                    <div class="call-icon">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Voice Call</strong><br>
+                                        <small>{{ ucfirst($msg->status) }} @if($msg->duration) • {{ $msg->duration }}s @endif</small>
+                                    </div>
+                                    <span class="message-time" style="margin-top: 10px;">
+                                        {{ $msg->created_at->format('H:i') }}
+                                    </span>
+                                </div>
+                            @else
+                                <div class="message-bubble {{ $msg->direction == 'outbound' ? 'message-outbound' : 'message-inbound' }}">
+                                    {{ $msg->body }}
+                                    <span class="message-time">
+                                        {{ $msg->created_at->format('H:i') }}
+                                    </span>
+                                </div>
+                            @endif
                         @empty
                             <div class="text-center text-muted" style="margin-top: 50px;">
                                 No messages in this conversation.
@@ -171,136 +210,61 @@
         <p id="call-status-text" style="color:#2ecc71; font-size:0.9rem; margin:0 0 20px;">Connecting…</p>
         <p id="call-timer" style="font-size:2rem; font-weight:600; letter-spacing:4px; margin:0 0 30px; display:none;">0:00</p>
 
-        <div style="display:flex; gap:24px; justify-content:center; align-items:center; flex-wrap:wrap;">
-            {{-- Mute --}}
-            <div style="text-align:center;">
-                <button id="btn-mute" onclick="toggleMute()" title="Mute"
-                    style="width:60px;height:60px;border-radius:50%;border:none;background:#2c2c4e;color:#fff;font-size:1.3rem;cursor:pointer;transition:all .3s;">
-                    <i class="fa fa-microphone"></i>
-                </button>
-                <p style="margin:6px 0 0; font-size:0.75rem; color:#aaa;">Mute</p>
-            </div>
-
+        <div style="display:flex; gap:24px; justify-content:center; align-items:center;">
             {{-- End Call --}}
             <div style="text-align:center;">
-                <button id="btn-end-call" onclick="endCall()" title="End Call"
-                    style="width:70px;height:70px;border-radius:50%;border:none;background:#e74c3c;color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 0 20px rgba(231,76,60,0.6);">
-                    <i class="fa fa-phone" style="transform:rotate(135deg); display:inline-block;"></i>
+                <button onclick="hideCallOverlay()" title="Close Overlay"
+                    style="width:70px;height:70px;border-radius:50%;border:none;background:#e74c3c;color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 0 20px rgba(231,76,60,0.4);">
+                    <i class="fa fa-times"></i>
                 </button>
-                <p style="margin:6px 0 0; font-size:0.75rem; color:#e74c3c;">End</p>
-            </div>
-
-            {{-- Speaker (placeholder) --}}
-            <div style="text-align:center;">
-                <button onclick="" title="Speaker"
-                    style="width:60px;height:60px;border-radius:50%;border:none;background:#2c2c4e;color:#fff;font-size:1.3rem;cursor:pointer;">
-                    <i class="fa fa-volume-up"></i>
-                </button>
-                <p style="margin:6px 0 0; font-size:0.75rem; color:#aaa;">Speaker</p>
+                <p style="margin:6px 0 0; font-size:0.75rem; color:#e74c3c;">Close</p>
             </div>
         </div>
     </div>
 </div>
-{{-- Twilio Voice JS SDK (official media CDN) --}}
-<script src="https://media.twiliocdn.com/sdk/js/client/v1.14/twilio.min.js"></script>
+
 
 <script>
     // ─── Chat Scroll ───────────────────────────────────────────────────────────
     var chatMessages = document.getElementById('chat-messages');
     if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // ─── Call State ────────────────────────────────────────────────────────────
-    var twilioDevice  = null;
-    var activeCall    = null;
-    var isMuted       = false;
-    var callTimerInt  = null;
-    var callSeconds   = 0;
-
-    // ─── Fetch Access Token & Setup Device ────────────────────────────────────
-    function setupTwilioDevice(onReady) {
-        $.getJSON('{{ route('api.twilio.token') }}', function(res){
-            if (!res.success) {
-                alert('Twilio not configured: ' + res.message);
-                hideCallOverlay();
-                return;
-            }
-
-            twilioDevice = new Twilio.Device(res.token, {
-                codecPreferences: ['opus', 'pcmu'],
-                allowIncomingWhileBusy: false,
-                logLevel: 0
-            });
-
-            twilioDevice.on('ready', function() {
-                setCallStatus('Ringing…', '#f39c12');
-                if (onReady) onReady();
-            });
-
-            twilioDevice.on('error', function(err) {
-                // Ignore non-critical audio device enumeration warnings
-                var ignoreMessages = ['Devices not found', 'Unable to set audio output', 'InvalidArgumentError'];
-                var isNonCritical = ignoreMessages.some(function(msg){ return err.message && err.message.indexOf(msg) !== -1; });
-                if (isNonCritical) { return; }
-
-                setCallStatus('Error: ' + err.message, '#e74c3c');
-                setTimeout(hideCallOverlay, 3000);
-            });
-
-            twilioDevice.on('disconnect', function() {
-                clearInterval(callTimerInt);
-                setCallStatus('Call ended', '#e74c3c');
-                setTimeout(hideCallOverlay, 1500);
-            });
-
-            twilioDevice.on('connect', function() {
-                setCallStatus('Connected', '#2ecc71');
-                document.getElementById('call-timer').style.display = 'block';
-                callSeconds = 0;
-                callTimerInt = setInterval(function(){
-                    callSeconds++;
-                    var m = Math.floor(callSeconds / 60);
-                    var s = callSeconds % 60;
-                    document.getElementById('call-timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
-                }, 1000);
-            });
-        }).fail(function(){
-            alert('Failed to reach token endpoint. Check live server routes.');
-            hideCallOverlay();
-        });
-    }
-
-
-    // ─── Initiate Call ────────────────────────────────────────────────────────
+    // ─── Initiate Call (Click-to-Call Bridge) ──────────────────────────────────
     $('#btn-call').on('click', function(){
         var phone      = $('#contact-phone').text().trim();
         var name       = '{{ $messagesLog->customer ? $messagesLog->customer->owner_name : "Contact" }}';
         var customerId = '{{ $messagesLog->customer_id }}';
 
         if (!phone) { alert('No phone number found.'); return; }
-        if (!confirm('Start a voice call to ' + phone + '?')) return;
+
+        var adminPhone = prompt("Enter your phone number to receive the call bridge:", localStorage.getItem('admin_phone') || "");
+        if (!adminPhone) return;
+        localStorage.setItem('admin_phone', adminPhone);
 
         showCallOverlay(name, phone);
-        setCallStatus('Connecting…', '#f39c12');
+        setCallStatus('Requesting bridge...', '#f39c12');
 
-        setupTwilioDevice(function(){
-            activeCall = twilioDevice.connect({ To: phone, customer_id: customerId });
+        $.post('{{ route('admin.messages-logs.initiate-call') }}', {
+            _token: '{{ csrf_token() }}',
+            to_num: phone,
+            admin_phone: adminPhone,
+            customer_id: customerId
+        }, function(res) {
+            if (res.success) {
+                setCallStatus(res.message, '#2ecc71');
+                // Removed automatic reload to keep status visible
+            } else {
+                setCallStatus('Error: ' + res.message, '#e74c3c');
+                setTimeout(hideCallOverlay, 4000);
+            }
+        }).fail(function(){
+            setCallStatus('Server Error', '#e74c3c');
+            setTimeout(hideCallOverlay, 2000);
         });
     });
 
-    // ─── Mute Toggle ─────────────────────────────────────────────────────────
-    function toggleMute() {
-        if (!activeCall) return;
-        isMuted = !isMuted;
-        activeCall.mute(isMuted);
-        var btn = document.getElementById('btn-mute');
-        btn.style.background = isMuted ? '#e74c3c' : '#2c2c4e';
-        btn.innerHTML = '<i class="fa fa-microphone' + (isMuted ? '-slash' : '') + '"></i>';
-    }
-
     // ─── End Call ────────────────────────────────────────────────────────────
     function endCall() {
-        if (twilioDevice) twilioDevice.disconnectAll();
-        clearInterval(callTimerInt);
         hideCallOverlay();
     }
 
@@ -312,15 +276,10 @@
         document.getElementById('call-contact-number').textContent = phone;
         document.getElementById('call-timer').style.display = 'none';
         document.getElementById('call-overlay').style.display = 'flex';
-        isMuted = false;
-        document.getElementById('btn-mute').style.background = '#2c2c4e';
-        document.getElementById('btn-mute').innerHTML = '<i class="fa fa-microphone"></i>';
     }
 
     function hideCallOverlay() {
         document.getElementById('call-overlay').style.display = 'none';
-        document.getElementById('call-timer').textContent = '0:00';
-        activeCall = null;
     }
 
     function setCallStatus(text, color) {

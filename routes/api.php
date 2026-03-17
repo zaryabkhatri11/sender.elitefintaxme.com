@@ -18,7 +18,9 @@ use Intervention\Image\Facades\Image;
 // Images Resize Route
 Route::get('/resize/{img}', function ($img) {
 
-    ob_end_clean();
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     try {
         $w = request()->get('w');
         $h = request()->get('h');
@@ -137,6 +139,7 @@ Route::resource('v1/invoices', 'InvoiceAPIController');
 Route::post('v1/webhooks/twilio/status',       'TwilioWebhookController@status')->name('webhooks.twilio.status');
 Route::post('v1/webhooks/twilio/incoming',     'TwilioWebhookController@incoming')->name('webhooks.twilio.incoming');
 Route::post('v1/webhooks/twilio/voice',        'TwilioWebhookController@voice')->name('webhooks.twilio.voice');
+Route::post('v1/webhooks/twilio/bridge-voice', 'TwilioWebhookController@bridgeVoice')->name('webhooks.twilio.bridge-voice');
 Route::post('v1/webhooks/twilio/call-status',  'TwilioWebhookController@callStatus')->name('webhooks.twilio.call-status');
 Route::get('v1/twilio/token',                  'TwilioClientController@token')->name('twilio.token');
 

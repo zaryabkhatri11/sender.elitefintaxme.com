@@ -112,4 +112,26 @@ class TwilioWebhookController extends AppBaseController
 
         return response('OK', 200);
     }
+
+    /**
+     * TwiML for call bridging.
+     */
+    public function bridgeVoice(Request $request)
+    {
+        $customerNum = $request->input('customer_num');
+        \Log::info("Twilio Bridge Leg 2: Connecting to $customerNum");
+        
+        $response = new \Twilio\TwiML\VoiceResponse();
+
+        if ($customerNum) {
+            $response->say('Wait while we connect your call.');
+            $dial = $response->dial('');
+            $dial->number($customerNum);
+        } else {
+            \Log::error("Twilio Bridge Leg 2 failure: No customer number provided.");
+            $response->say('No customer number provided.');
+        }
+
+        return response($response, 200)->header('Content-Type', 'text/xml');
+    }
 }

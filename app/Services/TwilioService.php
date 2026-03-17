@@ -13,9 +13,9 @@ class TwilioService
 
     public function __construct()
     {
-        $sid = env('TWILIO_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
-        $this->from = env('TWILIO_NUMBER');
+        $sid = config('services.twilio.sid');
+        $token = config('services.twilio.auth_token');
+        $this->from = config('services.twilio.from');
 
         if ($sid && $token) {
             $this->client = new Client($sid, $token);
@@ -53,10 +53,10 @@ class TwilioService
      */
     public function getAccessToken($identity = 'admin')
     {
-        $sid       = env('TWILIO_SID');
-        $apiKey    = env('TWILIO_API_KEY');
-        $apiSecret = env('TWILIO_API_SECRET');
-        $appSid    = env('TWILIO_TWIML_APP_SID');
+        $sid       = config('services.twilio.sid');
+        $apiKey    = config('services.twilio.api_key');
+        $apiSecret = config('services.twilio.api_secret');
+        $appSid    = config('services.twilio.twiml_app_sid');
 
         if (!$sid || !$apiKey || !$apiSecret || !$appSid) {
             return null;
@@ -127,6 +127,32 @@ class TwilioService
             }
 
             $call = $this->client->calls->create($to, $this->from, $params);
+
+            return ['success' => true, 'sid' => $call->sid, 'status' => $call->status];
+        }
+        catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Bridge a call between two numbers (Click-to-Call).
+     */
+    public function bridgeCall($fromAdmin, $toCustomer, $bridgeUrl, $callbackUrl = null)
+    {
+        if (!$this->client) {
+            return ['success' => false, 'message' => 'Twilio credentials not configured.'];
+        }
+
+        try {
+            $fromAdmin = $this->formatNumber($fromAdmin);
+            $params = ['url' => $bridgeUrl];
+
+            if ($callbackUrl) {
+                $params['statusCallback'] = $callbackUrl;
+            }
+
+            $call = $this->client->calls->create($fromAdmin, $this->from, $params);
 
             return ['success' => true, 'sid' => $call->sid, 'status' => $call->status];
         }
