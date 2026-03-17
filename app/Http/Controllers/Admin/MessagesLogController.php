@@ -54,8 +54,14 @@ class MessagesLogController extends AppBaseController
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $callLogs = \App\Models\CallLog::with('customer')
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         return view('admin.messages_logs.index', [
             'threads' => $threads,
+            'callLogs' => $callLogs,
             'title' => $this->BreadCrumbName
         ]);
     }

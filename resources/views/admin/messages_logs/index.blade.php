@@ -159,6 +159,9 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Conversations</h3>
                 <div class="box-tools pull-right" style="padding-top: 5px; display: flex; align-items: center; gap: 8px;">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#callHistoryModal">
+                        <i class="fa fa-history"></i> Call History
+                    </button>
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#dialPadModal">
                         <i class="fa fa-th"></i> Dial Pad
                     </button>
@@ -254,6 +257,54 @@
         <button onclick="document.getElementById('call-overlay').style.display='none'" class="btn btn-danger" style="width:65px; height:65px; border-radius:50%; font-size: 1.5rem;">
             <i class="fa fa-times"></i>
         </button>
+    </div>
+</div>
+
+{{-- Call History Modal --}}
+<div class="modal fade" id="callHistoryModal" tabindex="-1" role="dialog" aria-labelledby="callHistoryModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none;">
+            <div class="modal-header" style="background: #3498db; color: #fff; border-bottom: none;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff; opacity: 0.8;"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="callHistoryModalLabel" style="font-weight: 600;">Recent Calls</h4>
+            </div>
+            <div class="modal-body" style="padding: 0; max-height: 450px; overflow-y: auto;">
+                <div class="list-group" style="margin-bottom: 0;">
+                    @forelse($callLogs as $log)
+                        <div class="list-group-item" style="border-left: none; border-right: none; padding: 15px 20px;">
+                            <div class="row">
+                                <div class="col-xs-2 text-center">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #f0f2f5; display: flex; align-items: center; justify-content: center; color: {{ $log->status == 'completed' ? '#2ecc71' : '#e74c3c' }}; font-size: 18px;">
+                                        <i class="fa {{ $log->status == 'completed' ? 'fa-phone' : 'fa-phone-square' }}"></i>
+                                    </div>
+                                </div>
+                                <div class="col-xs-7">
+                                    <div style="font-weight: 600; color: #111b21;">
+                                        {{ $log->customer ? $log->customer->owner_name : $log->to_num }}
+                                    </div>
+                                    <div style="font-size: 12px; color: #667781;">
+                                        {{ $log->status }} • {{ $log->duration ? $log->duration.'s' : 'No duration' }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-3 text-right">
+                                    <div style="font-size: 11px; color: #8696a0;">
+                                        {{ $log->created_at->diffForHumans() }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center" style="padding: 40px; color: #999;">
+                            <i class="fa fa-history" style="font-size: 40px; margin-bottom: 10px; opacity: 0.3;"></i>
+                            <p>No call history found.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="modal-footer" style="background: #f8f9fa;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
