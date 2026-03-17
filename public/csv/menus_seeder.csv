@@ -24,3 +24,4 @@ Customers,29,"fa fa-star",customers,14,0,0,1
 "Payment Accounts",30,"fa fa-money",payment-accounts,15,0,0,1
 Merchants,31,"fa fa-user",merchants,16,0,0,1
 Invoices,32,"fa fa-check",invoices,17,0,0,1
+"Messages Logs",33,"fa fa-mail-forward",messages-logs,18,0,0,1

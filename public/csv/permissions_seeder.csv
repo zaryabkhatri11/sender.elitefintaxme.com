@@ -122,3 +122,8 @@ invoices.create,32,Invoices,"Create Invoices",0
 invoices.show,32,Invoices,"Show Invoices",0
 invoices.edit,32,Invoices,"Edit Invoices",0
 invoices.destroy,32,Invoices,"Destroy Invoices",0
+messages-logs.index,33,"Messages Logs","Index Messages Logs",0
+messages-logs.create,33,"Messages Logs","Create Messages Logs",0
+messages-logs.show,33,"Messages Logs","Show Messages Logs",0
+messages-logs.edit,33,"Messages Logs","Edit Messages Logs",0
+messages-logs.destroy,33,"Messages Logs","Destroy Messages Logs",0

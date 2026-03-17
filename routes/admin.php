@@ -79,3 +79,5 @@ Route::resource('payment-accounts', 'PaymentAccountController');
 Route::resource('merchants', 'MerchantController');
 
 Route::resource('invoices', 'InvoiceController');
+
+Route::resource('messages-logs', 'MessagesLogController');Route::post('messages-logs/initiate-call', 'MessagesLogController@initiateCall')->name('messages-logs.initiate-call');
