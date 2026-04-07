@@ -140,3 +140,34 @@ Route::get('test-twilio', function () {
     ];
 })->name('test-twilio');
 
+Route::get('test-inbound', function () {
+    $twilioFrom = config('services.twilio.from');
+    return "
+        <html>
+        <body style='font-family: sans-serif; padding: 20px;'>
+            <h3>Twilio Inbound Simulation</h3>
+            <p>This form will send a POST request to your webhook endpoint to simulate an incoming SMS.</p>
+            <form action='" . route('api.webhooks.twilio.incoming') . "' method='POST' style='background:#f4f4f4; padding:20px; border-radius:8px; display:inline-block;'>
+                <div style='margin-bottom:10px;'>
+                    <label>From (Your Mobile):</label><br>
+                    <input name='From' value='+923331234567' style='width:300px; padding:5px;'>
+                </div>
+                <div style='margin-bottom:10px;'>
+                    <label>To (Twilio Number):</label><br>
+                    <input name='To' value='$twilioFrom' style='width:300px; padding:5px;'>
+                </div>
+                <div style='margin-bottom:10px;'>
+                    <label>Message Body:</label><br>
+                    <textarea name='Body' style='width:300px; padding:5px; height:80px;'>Hello from Pakistan!</textarea>
+                </div>
+                <input type='hidden' name='MessageSid' value='SM" . md5(time()) . "'>
+                <button type='submit' style='background:#007bff; color:#fff; border:none; padding:10px 20px; border-radius:4px; cursor:pointer;'>
+                    Simulate Inbound SMS
+                </button>
+            </form>
+            <p><small>Note: This works because we excluded the webhook from CSRF protection.</small></p>
+        </body>
+        </html>
+    ";
+})->name('test-inbound');
+

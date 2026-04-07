@@ -179,16 +179,23 @@
                             </div>
                             <div class="chat-info">
                                 <div class="chat-header">
-                                    <span class="chat-name">{{ $name }}</span>
-                                    <span class="chat-time">{{ $thread->created_at->diffForHumans() }}</span>
+                                    <span class="chat-name" style="{{ $thread->unread_count > 0 ? 'font-weight: 800; color: #000;' : '' }}">{{ $name }}</span>
+                                    <span class="chat-time" style="{{ $thread->unread_count > 0 ? 'color: #00a884; font-weight: 600;' : '' }}">{{ $thread->created_at->diffForHumans() }}</span>
                                 </div>
-                                <div class="chat-preview">
+                                <div class="chat-preview" style="{{ $thread->unread_count > 0 ? 'font-weight: 700; color: #111b21;' : '' }}">
                                     {{ $thread->body }}
                                 </div>
                                 <div class="chat-phone">
                                     {{ $phone }}
                                 </div>
                             </div>
+                            @if($thread->unread_count > 0)
+                                <div class="chat-meta" style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; margin-left: 10px;">
+                                    <div style="background: #25d366; color: #fff; min-width: 20px; height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; padding: 0 6px;">
+                                        {{ $thread->unread_count }}
+                                    </div>
+                                </div>
+                            @endif
                         </a>
                     @empty
                         <div class="text-center" style="padding: 40px;">

@@ -45,6 +45,8 @@ class TwilioWebhookController extends AppBaseController
      */
     public function incoming(Request $request)
     {
+        \Log::info("Twilio Incoming SMS Request: ", $request->all());
+
         $data = [
             'to_num' => $request->input('To'),
             'from_num' => $request->input('From'),
@@ -52,18 +54,29 @@ class TwilioWebhookController extends AppBaseController
             'message_sid' => $request->input('MessageSid'),
             'direction' => 'inbound',
             'status' => 'received',
+            'is_read' => false,
         ];
 
         // Try to associate with a customer by phone
-        $customer = \App\Models\Customer::where('phone', $data['from_num'])
-            ->orWhere('phone', str_replace('+', '', $data['from_num']))
+        $from = $data['from_num'];
+        $customer = \App\Models\Customer::where('phone', $from)
+            ->orWhere('phone', str_replace('+', '', $from))
+            ->orWhere('phone', 'like', '%' . substr($from, -10))
             ->first();
             
         if ($customer) {
             $data['customer_id'] = $customer->id;
+            \Log::info("Matched customer: ID=" . $customer->id);
+        } else {
+            \Log::info("No customer matched for phone: $from");
         }
 
-        MessagesLog::create($data);
+        try {
+            $logEntry = MessagesLog::create($data);
+            \Log::info("Inbound SMS stored: ID=" . $logEntry->id);
+        } catch (\Exception $e) {
+            \Log::error("Failed to store inbound SMS: " . $e->getMessage());
+        }
 
         return response('<Response></Response>', 200)->header('Content-Type', 'text/xml');
     }

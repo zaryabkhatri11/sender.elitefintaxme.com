@@ -51,8 +51,24 @@ class MessagesLogController extends AppBaseController
                     ->whereNull('deleted_at')
                     ->groupBy(\DB::raw('CASE WHEN customer_id IS NOT NULL THEN CAST(customer_id AS CHAR) ELSE to_num END'));
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
+
+        foreach ($threads as $thread) {
+            $unreadQuery = \App\Models\MessagesLog::where('is_read', false)
+                ->where('direction', 'inbound');
+
+            if ($thread->customer_id) {
+                $unreadQuery->where('customer_id', $thread->customer_id);
+            } else {
+                $phone = ($thread->direction == 'outbound') ? $thread->to_num : $thread->from_num;
+                $unreadQuery->whereNull('customer_id')
+                    ->where(function ($q) use ($phone) {
+                        $q->where('to_num', $phone)->orWhere('from_num', $phone);
+                    });
+            }
+            $thread->unread_count = $unreadQuery->count();
+        }
 
         $callLogs = \App\Models\CallLog::with('customer')
             ->orderBy('created_at', 'desc')
@@ -117,7 +133,7 @@ class MessagesLogController extends AppBaseController
         foreach ($recipients as $recipient) {
             $data = $request->all();
             $data['to_num'] = $recipient;
-            $data['from_num'] = env('TWILIO_NUMBER');
+            $data['from_num'] = config('services.twilio.from');
             
             // Try to find matching customer by phone among selected ones
             // If not found, it remains null (direct number)
@@ -176,6 +192,12 @@ class MessagesLogController extends AppBaseController
                 ->get();
             $calls = \App\Models\CallLog::where('customer_id', $messagesLog->customer_id)
                 ->get();
+
+            // Mark as read
+            \App\Models\MessagesLog::where('customer_id', $messagesLog->customer_id)
+                ->where('direction', 'inbound')
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
         } else {
             // Match by phone if no customer is linked
             $phone = ($messagesLog->direction == 'outbound') ? $messagesLog->to_num : $messagesLog->from_num;
@@ -189,6 +211,15 @@ class MessagesLogController extends AppBaseController
                 })
                 ->whereNull('customer_id')
                 ->get();
+
+            // Mark as read
+            \App\Models\MessagesLog::whereNull('customer_id')
+                ->where(function($q) use ($phone) {
+                    $q->where('to_num', $phone)->orWhere('from_num', $phone);
+                })
+                ->where('direction', 'inbound')
+                ->where('is_read', false)
+                ->update(['is_read' => true]);
         }
 
         // Merge and sort chronologically

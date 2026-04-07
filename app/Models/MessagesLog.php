@@ -101,6 +101,7 @@ class MessagesLog extends Model
         'direction',
         'message_sid',
         'status',
+        'is_read',
         'created_at',
         'updated_at'
     ];
@@ -118,7 +119,8 @@ class MessagesLog extends Model
         'body' => 'string',
         'direction' => 'string',
         'message_sid' => 'string',
-        'status' => 'string'
+        'status' => 'string',
+        'is_read' => 'boolean'
     ];
 
     /**
