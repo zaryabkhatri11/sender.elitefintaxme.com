@@ -135,6 +135,8 @@ class TwilioService
                     $params['statusCallback'] = $callbackUrl;
                 }
 
+                $params['body'] = $message;
+
                 $msg = $this->client->messages->create($recipient, $params);
 
                 $results[] = ['to' => $recipient, 'success' => true, 'sid' => $msg->sid, 'status' => $msg->status];
