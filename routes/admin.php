@@ -80,6 +80,19 @@ Route::resource('merchants', 'MerchantController');
 
 Route::resource('invoices', 'InvoiceController');
 
+
+
+// Campaign 
+Route::get('campaigns', 'CampaignController@index')->name('campaigns.index');
+
+
+Route::get('campaigns/create', 'CampaignController@create')->name('campaigns.create');
+Route::post('campaigns/store', 'CampaignController@store')->name('campaigns.store');
+
+
+
+
+// Route::post('messages-logs/csv-upload', "MessagesLogController@csvUpload")->name('messages-logs.csv-upload');
 Route::resource('messages-logs', 'MessagesLogController');
 Route::post('messages-logs/initiate-call', 'MessagesLogController@initiateCall')->name('messages-logs.initiate-call');
 
@@ -92,10 +105,10 @@ Route::get('clear-cache', function () {
 })->name('clear-cache');
 
 Route::get('test-twilio', function () {
-    $sid       = config('services.twilio.sid');
+    $sid = config('services.twilio.sid');
     $authToken = config('services.twilio.auth_token');
-    $apiKey    = config('services.twilio.api_key');
-    $secret    = config('services.twilio.api_secret');
+    $apiKey = config('services.twilio.api_key');
+    $secret = config('services.twilio.api_secret');
 
     $results = [];
 
